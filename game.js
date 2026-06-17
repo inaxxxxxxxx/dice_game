@@ -27,7 +27,7 @@
       return {
         rank: HAND_RANK.ARASHI,
         subValue: a,
-        label: `アラシ（${a}・${b}・${c}）`,
+        label: a === 1 ? 'ピンゾロ' : `アラシ（${a}・${b}・${c}）`,
         eyes: sorted,
         isNoHand: false,
       };
