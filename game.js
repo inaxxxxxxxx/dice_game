@@ -478,8 +478,11 @@
     setTimeout(()=> Dice3D.throwDice(), 650);
   }
 
+  function vibrate(){ if(navigator.vibrate) navigator.vibrate(30); }
+
   btnThrow.addEventListener('click', ()=>{
     if(Dice3D.isAnimating()) return;
+    vibrate();
     state.attempts++;
     rollAttemptEl.textContent = `${state.attempts}投目 / 3投まで`;
     btnThrow.disabled = true;
@@ -487,6 +490,7 @@
   });
 
   btnRetry.addEventListener('click', ()=>{
+    vibrate();
     state.attempts++;
     rollAttemptEl.textContent = `${state.attempts}投目 / 3投まで`;
     btnRetry.hidden = true;
