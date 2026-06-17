@@ -23,7 +23,7 @@
   let floorY = -1.4;
 
   const DICE_SIZE = 0.62;
-  const GRAVITY = -20.0;
+  const GRAVITY = -34.0;
 
   function init(canvasEl){
     canvas = canvasEl;
@@ -189,13 +189,13 @@
     diceMeshes.forEach((mesh, i)=>{
       const angle = Math.random() * Math.PI * 2;
       const spread = 0.4 + Math.random()*0.5;
-      mesh.position.set(Math.cos(angle)*spread, 3.2 + Math.random()*0.8, Math.sin(angle)*spread);
+      mesh.position.set(Math.cos(angle)*spread, 2.2 + Math.random()*0.5, Math.sin(angle)*spread);
       mesh.rotation.set(Math.random()*Math.PI*2, Math.random()*Math.PI*2, Math.random()*Math.PI*2);
 
       const body = diceBodies[i];
       body.vel.set(
         (Math.random()-0.5)*6.0,
-        4.5 + Math.random()*1.5,
+        0.4 + Math.random()*0.6,
         (Math.random()-0.5)*6.0
       );
       body.angVel.set(
@@ -239,7 +239,7 @@
         if(mesh.position.y <= floorLevel){
           mesh.position.y = floorLevel;
           if(body.vel.y < 0){
-            body.vel.y *= -0.55; // bounce damping
+            body.vel.y *= -0.32; // bounce damping
           }
           body.vel.x *= 0.88;
           body.vel.z *= 0.88;
