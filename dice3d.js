@@ -23,7 +23,7 @@
   let floorY = -1.4;
 
   const DICE_SIZE = 0.62;
-  const GRAVITY = -14.0;
+  const GRAVITY = -20.0;
 
   function init(canvasEl){
     canvas = canvasEl;
@@ -189,19 +189,19 @@
     diceMeshes.forEach((mesh, i)=>{
       const angle = Math.random() * Math.PI * 2;
       const spread = 0.4 + Math.random()*0.5;
-      mesh.position.set(Math.cos(angle)*spread, 2.4 + Math.random()*0.6, Math.sin(angle)*spread);
+      mesh.position.set(Math.cos(angle)*spread, 3.2 + Math.random()*0.8, Math.sin(angle)*spread);
       mesh.rotation.set(Math.random()*Math.PI*2, Math.random()*Math.PI*2, Math.random()*Math.PI*2);
 
       const body = diceBodies[i];
       body.vel.set(
-        (Math.random()-0.5)*3.0,
-        3.0 + Math.random()*1.2,
-        (Math.random()-0.5)*3.0
+        (Math.random()-0.5)*6.0,
+        4.5 + Math.random()*1.5,
+        (Math.random()-0.5)*6.0
       );
       body.angVel.set(
-        (Math.random()-0.5)*22,
-        (Math.random()-0.5)*22,
-        (Math.random()-0.5)*22
+        (Math.random()-0.5)*42,
+        (Math.random()-0.5)*42,
+        (Math.random()-0.5)*42
       );
       body.rest = false;
       body.restTimer = 0;
@@ -239,11 +239,11 @@
         if(mesh.position.y <= floorLevel){
           mesh.position.y = floorLevel;
           if(body.vel.y < 0){
-            body.vel.y *= -0.42; // bounce damping
+            body.vel.y *= -0.55; // bounce damping
           }
-          body.vel.x *= 0.82;
-          body.vel.z *= 0.82;
-          body.angVel.multiplyScalar(0.78);
+          body.vel.x *= 0.88;
+          body.vel.z *= 0.88;
+          body.angVel.multiplyScalar(0.86);
 
           if(Math.abs(body.vel.y) < 0.55 && Math.abs(body.vel.x) < 0.25 && Math.abs(body.vel.z) < 0.25){
             body.vel.y = 0;
@@ -266,9 +266,9 @@
         }
 
         // general damping (air/surface friction)
-        body.vel.x *= 0.985;
-        body.vel.z *= 0.985;
-        body.angVel.multiplyScalar(0.965);
+        body.vel.x *= 0.992;
+        body.vel.z *= 0.992;
+        body.angVel.multiplyScalar(0.978);
       });
 
       // dice-dice collision
