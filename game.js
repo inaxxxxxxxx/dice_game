@@ -210,10 +210,32 @@
     screens[el.dataset.screen] = el;
   });
 
+  const btnHome = document.getElementById('btn-home');
+
   function showScreen(name){
     Object.values(screens).forEach(s=> s.hidden = true);
     screens[name].hidden = false;
+    // タイトル・確率テーブル以外ではTOPへ戻るボタンを表示
+    btnHome.hidden = (name === 'title' || name === 'odds');
   }
+
+  function resetToTitle(){
+    if(window.Effects) Effects.stop();
+    state.round = 1;
+    state.isSuddenDeath = false;
+    state.players = [];
+    state.results = {};
+    state.decidedWinners = [];
+    state.decidedLosers = [];
+    state.finalRecord = {};
+    state.activeEffect = null;
+    cheatArashi = false;
+    showScreen('title');
+  }
+
+  btnHome.addEventListener('click', ()=>{
+    if(confirm('ゲームを中断してTOPに戻りますか？')) resetToTitle();
+  });
 
   // ============ Screen: Title ============
   document.getElementById('btn-start').addEventListener('click', ()=>{
@@ -710,16 +732,7 @@
     showScreen('final');
   }
 
-  document.getElementById('btn-restart').addEventListener('click', ()=>{
-    state.round = 1;
-    state.isSuddenDeath = false;
-    state.players = [];
-    state.results = {};
-    state.decidedWinners = [];
-    state.decidedLosers = [];
-    state.finalRecord = {};
-    showScreen('title');
-  });
+  document.getElementById('btn-restart').addEventListener('click', resetToTitle);
 
   // ============ 初期化 ============
   renderPC();
