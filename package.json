@@ -1,0 +1,10 @@
+{
+  "name": "chinchiro",
+  "version": "1.0.0",
+  "description": "ブラウザで遊べるチンチロ（3D骰子）アプリ",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 8910"
+  },
+  "license": "UNLICENSED"
+}

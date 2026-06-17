@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>チンチロリン</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============ Screen: Title ============ -->
+  <section class="screen" id="screen-title" data-screen="title">
+    <div class="bowl-mark" aria-hidden="true">
+      <div class="bowl-ring"></div>
+      <div class="bowl-ring bowl-ring-2"></div>
+    </div>
+    <p class="eyebrow">骰子三つ、運を賭す</p>
+    <h1 class="game-title">チンチロリン</h1>
+    <p class="lede">碗の中で三つの骰子が転がる。出た目で役が決まり、強い役から順に勝ち抜ける。</p>
+    <button class="btn btn-primary btn-large" id="btn-start">ゲームをはじめる</button>
+  </section>
+
+  <!-- ============ Screen: Player Count ============ -->
+  <section class="screen" id="screen-playercount" data-screen="playercount" hidden>
+    <p class="step-label">セットアップ ・ 1</p>
+    <h2 class="screen-title">参加人数は？</h2>
+    <p class="screen-desc">2人から6人まで対応しています。</p>
+
+    <div class="stepper" id="stepper-playercount">
+      <button class="stepper-btn" id="pc-minus" aria-label="減らす">−</button>
+      <div class="stepper-value" id="pc-value">3</div>
+      <button class="stepper-btn" id="pc-plus" aria-label="増やす">＋</button>
+    </div>
+    <p class="stepper-unit">人</p>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="pc-back">戻る</button>
+      <button class="btn btn-primary" id="pc-next">次へ</button>
+    </div>
+  </section>
+
+  <!-- ============ Screen: Loser Count ============ -->
+  <section class="screen" id="screen-losercount" data-screen="losercount" hidden>
+    <p class="step-label">セットアップ ・ 2</p>
+    <h2 class="screen-title">何人が負けに残る？</h2>
+    <p class="screen-desc" id="lc-desc">出目が弱い方から、この人数だけ負けが確定します。</p>
+
+    <div class="stepper" id="stepper-losercount">
+      <button class="stepper-btn" id="lc-minus" aria-label="減らす">−</button>
+      <div class="stepper-value" id="lc-value">1</div>
+      <button class="stepper-btn" id="lc-plus" aria-label="増やす">＋</button>
+    </div>
+    <p class="stepper-unit">人</p>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="lc-back">戻る</button>
+      <button class="btn btn-primary" id="lc-next">次へ</button>
+    </div>
+  </section>
+
+  <!-- ============ Screen: Name Entry (sequential) ============ -->
+  <section class="screen" id="screen-names" data-screen="names" hidden>
+    <p class="step-label" id="names-step-label">プレイヤー登録 ・ 1人目</p>
+    <h2 class="screen-title">名前を入力してください</h2>
+    <p class="screen-desc">この画面はプレイヤーごとに表示されます。順番に手渡ししてください。</p>
+
+    <input type="text" class="name-input" id="name-input" placeholder="例：たろう" maxlength="10" autocomplete="off">
+    <p class="input-hint" id="name-hint">&nbsp;</p>
+
+    <div class="nav-row">
+      <button class="btn btn-primary btn-large" id="name-next">登録する</button>
+    </div>
+  </section>
+
+  <!-- ============ Screen: Hand-off (pass device) ============ -->
+  <section class="screen" id="screen-handoff" data-screen="handoff" hidden>
+    <p class="step-label" id="handoff-round-label">第1ラウンド</p>
+    <div class="handoff-card">
+      <p class="handoff-to">次に振るのは</p>
+      <h2 class="handoff-name" id="handoff-name">たろう</h2>
+      <p class="handoff-sub">端末を渡したら、はじめてください</p>
+    </div>
+    <button class="btn btn-primary btn-large" id="handoff-ready">準備できた</button>
+  </section>
+
+  <!-- ============ Screen: Dice Roll ============ -->
+  <section class="screen screen-roll" id="screen-roll" data-screen="roll" hidden>
+    <div class="roll-header">
+      <p class="roll-player" id="roll-player-name">たろう</p>
+      <p class="roll-attempt" id="roll-attempt">1投目 / 3投まで</p>
+    </div>
+
+    <div class="dice-stage" id="dice-stage">
+      <canvas id="dice-canvas"></canvas>
+      <div class="bowl-rim" aria-hidden="true"></div>
+    </div>
+
+    <div class="roll-result" id="roll-result" aria-live="polite">
+      <p class="roll-result-eyes" id="roll-result-eyes">&nbsp;</p>
+      <p class="roll-result-name" id="roll-result-name">&nbsp;</p>
+    </div>
+
+    <button class="btn btn-primary btn-large" id="btn-throw">骰子を振る</button>
+    <button class="btn btn-secondary btn-large" id="btn-retry" hidden>もう一度振る</button>
+    <button class="btn btn-primary btn-large" id="btn-confirm" hidden>この目で確定</button>
+  </section>
+
+  <!-- ============ Screen: Round Summary ============ -->
+  <section class="screen" id="screen-summary" data-screen="summary" hidden>
+    <p class="step-label" id="summary-label">第1ラウンド結果</p>
+    <h2 class="screen-title" id="summary-title">出目が決まりました</h2>
+
+    <div class="result-list" id="result-list"></div>
+
+    <button class="btn btn-primary btn-large" id="summary-next">次へ</button>
+  </section>
+
+  <!-- ============ Screen: Final Result ============ -->
+  <section class="screen" id="screen-final" data-screen="final" hidden>
+    <p class="eyebrow" id="final-eyebrow">勝敗確定</p>
+    <h2 class="screen-title" id="final-title">結果</h2>
+
+    <div class="result-list result-list-final" id="final-result-list"></div>
+
+    <div class="nav-row">
+      <button class="btn btn-primary btn-large" id="btn-restart">もう一度プレイ</button>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="dice3d.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
