@@ -627,7 +627,7 @@
       state.round += 1;
       state.activeIndices = contendingForSuddenDeath;
       state.suddenDeathSlotsNeeded = slotsLeft;
-      beginRound();
+      showSuddenDeathScreen(contendingForSuddenDeath, slotsLeft);
       return;
     }
 
@@ -641,6 +641,34 @@
 
     showFinalResult();
   }
+
+  // ============ Screen: Sudden Death ============
+  function showSuddenDeathScreen(indices, slotsLeft){
+    const sdDesc = document.getElementById('sd-desc');
+    const sdList = document.getElementById('sd-player-list');
+    sdDesc.textContent = `${indices.length}人が同着のため再戦。このうち${slotsLeft}人の負けを決めます。`;
+    sdList.innerHTML = '';
+    indices.forEach(idx => {
+      const row = document.createElement('div');
+      row.className = 'result-row';
+      const rec = state.results[idx];
+      row.innerHTML = `
+        <div class="result-row-left">
+          <div class="result-name">${escapeHtml(state.players[idx].name)}</div>
+          <div class="result-status" style="margin-left:4px;">${rec ? rec.hand.label : ''}</div>
+        </div>
+        <div class="result-row-right">
+          <div class="result-eyes">${rec ? rec.eyes.join(' ') : ''}</div>
+        </div>
+      `;
+      sdList.appendChild(row);
+    });
+    showScreen('suddendeath');
+  }
+
+  document.getElementById('sd-start').addEventListener('click', ()=>{
+    beginRound();
+  });
 
   // ============ Screen: Final Result ============
   const finalResultList = document.getElementById('final-result-list');
