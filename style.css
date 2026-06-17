@@ -483,6 +483,69 @@ html, body{
 /* ============ Odds screen ============ */
 .screen-odds{ padding-top: 40px; align-items: flex-start; }
 
+/* tabs */
+.odds-tabs{
+  display: flex;
+  width: 100%;
+  max-width: 420px;
+  border-bottom: 2px solid var(--line);
+  margin-bottom: 16px;
+}
+.odds-tab{
+  flex: 1;
+  background: none;
+  border: none;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 10px 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.odds-tab.active{
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+/* mode toggle row */
+.odds-mode-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  background: var(--paper-dim);
+  border-radius: 10px;
+}
+.odds-mode-label{
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.odds-mode-row.is-amachin{
+  background: var(--gold-soft);
+}
+.odds-mode-row.is-amachin .odds-mode-label{
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.odds-desc{
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+  line-height: 1.7;
+}
+
+.odds-panel{ width: 100%; max-width: 420px; }
+
 .odds-section{
   width: 100%;
   max-width: 420px;
