@@ -240,33 +240,28 @@
     { body: 'rgba(240,170,20,0.80)', fin: 'rgba(200,120,10,0.65)',eye: 'rgba(80,30,120,0.9)'   }, // 黄
   ];
 
-  function initFish(){
-    const schools = Array.from({length: 4}, () => newSchool());
-    return { schools };
+  function newFish(init){
+    const color = FISH_COLORS[Math.floor(Math.random() * FISH_COLORS.length)];
+    return {
+      x:     init ? Math.random() * W() : W() + 60,
+      y:     Math.random() * H(),
+      vx:    -(160 + Math.random() * 100),
+      phase: Math.random() * Math.PI * 2,
+      size:  14 + Math.random() * 18,
+      color,
+    };
   }
 
-  function newSchool(){
-    const cy    = H() * (0.1 + Math.random() * 0.8);
-    const count = 14 + Math.floor(Math.random() * 12);
-    const color = FISH_COLORS[Math.floor(Math.random() * FISH_COLORS.length)];
-    const fish  = Array.from({length: count}, () => ({
-      ox: Math.random() * 340,
-      oy: (Math.random() - 0.5) * 120,
-      phase: Math.random() * Math.PI * 2,
-      size:  11 + Math.random() * 11,
-    }));
-    return { fish, cx: W() + 250 + Math.random() * 300, cy, vx: -(160 + Math.random() * 80), color };
+  function initFish(){
+    return { fish: Array.from({length: 80}, () => newFish(true)) };
   }
 
   function updateFish(s, dt){
-    s.schools.forEach((sc, si) => {
-      sc.cx += sc.vx * dt;
-      sc.fish.forEach(f => {
-        f.x     = sc.cx - f.ox;
-        f.phase += dt * 4.5;
-        f.y     = sc.cy + f.oy + Math.sin(f.phase + f.ox * 0.025) * 11;
-      });
-      if(sc.cx < -400) s.schools[si] = newSchool();
+    s.fish.forEach(f => {
+      f.x     += f.vx * dt;
+      f.phase += dt * 5;
+      f.y     += Math.sin(f.phase) * 18 * dt;
+      if(f.x < -80) Object.assign(f, newFish(false));
     });
   }
 
@@ -313,9 +308,7 @@
 
   function drawFish(s){
     ctx.clearRect(0, 0, W(), H());
-    s.schools.forEach(sc => {
-      sc.fish.forEach(f => drawFishShape(f, sc.color));
-    });
+    s.fish.forEach(f => drawFishShape(f, f.color));
   }
 
   // ============================================================
