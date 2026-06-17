@@ -110,9 +110,9 @@
       // 各演出内での出目補正（累積確率で実装しやすい形）
       outcomes: {
         fish:   [['ARASHI',0.50],['SHIGORO',0.80],['NORMAL',1.00]],
-        flame:  [['NORMAL',0.70],['ARASHI',0.90],['NO_HAND',1.00]],
-        bubble: [['NO_HAND',0.55],['NORMAL',0.80],['HIFUMI',1.00]],
-        rain:   [['NO_HAND',0.55],['HIFUMI',0.90],['NORMAL',1.00]],
+        flame:  [['PINZORO',0.03],['ARASHI',0.23],['NORMAL',0.90],['NO_HAND',1.00]],
+        bubble: [['PINZORO',0.02],['NO_HAND',0.55],['NORMAL',0.80],['HIFUMI',1.00]],
+        rain:   [['PINZORO',0.01],['NO_HAND',0.55],['HIFUMI',0.90],['NORMAL',1.00]],
       },
     },
     amachin: {
@@ -120,9 +120,9 @@
       effectWeights: { fish: 0.30, flame: 0.30, bubble: 0.20, rain: 0.20 },
       outcomes: {
         fish:   [['PINZORO',0.10],['ARASHI',0.70],['SHIGORO',0.95],['NORMAL',1.00]],
-        flame:  [['ARASHI',0.30],['NORMAL',0.95],['NO_HAND',1.00]],
-        bubble: [['NORMAL',0.60],['NO_HAND',0.90],['HIFUMI',1.00]],
-        rain:   [['NORMAL',0.45],['NO_HAND',0.85],['HIFUMI',1.00]],
+        flame:  [['PINZORO',0.05],['ARASHI',0.35],['NORMAL',0.95],['NO_HAND',1.00]],
+        bubble: [['PINZORO',0.03],['NORMAL',0.60],['NO_HAND',0.90],['HIFUMI',1.00]],
+        rain:   [['PINZORO',0.02],['NORMAL',0.45],['NO_HAND',0.85],['HIFUMI',1.00]],
       },
     },
   };

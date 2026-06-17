@@ -26,43 +26,137 @@
   <!-- ============ Screen: Odds ============ -->
   <section class="screen screen-odds" id="screen-odds" data-screen="odds" hidden>
     <h2 class="screen-title">確率テーブル</h2>
-    <p class="screen-desc" style="margin-bottom:24px;">サイコロを振るたびに10%の確率で演出が発動し、出目が補正されます。</p>
 
-    <div class="odds-section">
-      <h3 class="odds-heading">演出の出現率</h3>
-      <table class="odds-table">
-        <thead><tr><th>演出</th><th>全体確率</th></tr></thead>
-        <tbody>
-          <tr><td>🌧 雨</td><td>4.0%</td></tr>
-          <tr><td>🫧 泡</td><td>2.5%</td></tr>
-          <tr><td>🔥 炎</td><td>2.5%</td></tr>
-          <tr><td>🐟 魚群</td><td>1.0%</td></tr>
-          <tr class="odds-row-none"><td>なし</td><td>90.0%</td></tr>
-        </tbody>
-      </table>
+    <!-- タブ -->
+    <div class="odds-tabs">
+      <button class="odds-tab active" data-tab="default">デフォルト</button>
+      <button class="odds-tab" data-tab="amachin">甘チンモード</button>
     </div>
 
-    <div class="odds-section">
-      <h3 class="odds-heading">演出×出目の補正</h3>
-      <table class="odds-table">
-        <thead><tr><th>演出</th><th>出目</th><th>演出内</th><th>全体</th></tr></thead>
-        <tbody>
-          <tr class="odds-group-fish"><td rowspan="3">🐟 魚群</td><td>アラシ</td><td>50%</td><td>0.50%</td></tr>
-          <tr class="odds-group-fish"><td>シゴロ</td><td>30%</td><td>0.30%</td></tr>
-          <tr class="odds-group-fish"><td>通常の目</td><td>20%</td><td>0.20%</td></tr>
-          <tr class="odds-group-flame"><td rowspan="3">🔥 炎</td><td>通常の目</td><td>70%</td><td>1.75%</td></tr>
-          <tr class="odds-group-flame"><td>アラシ</td><td>20%</td><td>0.50%</td></tr>
-          <tr class="odds-group-flame"><td>目なし</td><td>10%</td><td>0.25%</td></tr>
-          <tr class="odds-group-bubble"><td rowspan="3">🫧 泡</td><td>目なし</td><td>55%</td><td>1.38%</td></tr>
-          <tr class="odds-group-bubble"><td>通常の目</td><td>25%</td><td>0.63%</td></tr>
-          <tr class="odds-group-bubble"><td>ヒフミ</td><td>20%</td><td>0.50%</td></tr>
-          <tr class="odds-group-rain"><td rowspan="3">🌧 雨</td><td>目なし</td><td>55%</td><td>2.20%</td></tr>
-          <tr class="odds-group-rain"><td>ヒフミ</td><td>35%</td><td>1.40%</td></tr>
-          <tr class="odds-group-rain"><td>通常の目</td><td>10%</td><td>0.40%</td></tr>
-        </tbody>
-      </table>
+    <!-- モード切替 -->
+    <div class="odds-mode-row">
+      <span class="odds-mode-label" id="odds-mode-label">現在：デフォルト</span>
+      <button class="btn btn-secondary" id="odds-mode-toggle" style="font-size:13px;padding:8px 16px;">甘チンに切替</button>
     </div>
 
+    <!-- デフォルトタブ -->
+    <div class="odds-panel" id="odds-panel-default">
+      <p class="odds-desc">演出出現率 <strong>10%</strong>。残り90%は通常のサイコロ。</p>
+
+      <div class="odds-section">
+        <h3 class="odds-heading">演出の出現率</h3>
+        <table class="odds-table">
+          <thead><tr><th>演出</th><th>全体確率</th></tr></thead>
+          <tbody>
+            <tr><td>🐟 魚群</td><td>1.0%</td></tr>
+            <tr><td>🔥 炎</td><td>2.5%</td></tr>
+            <tr><td>🫧 泡</td><td>2.5%</td></tr>
+            <tr><td>🌧 雨</td><td>4.0%</td></tr>
+            <tr class="odds-row-none"><td>なし</td><td>90.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="odds-section">
+        <h3 class="odds-heading">演出×出目の補正</h3>
+        <table class="odds-table">
+          <thead><tr><th>演出</th><th>出目</th><th>演出内</th><th>全体</th></tr></thead>
+          <tbody>
+            <tr class="odds-group-fish"><td rowspan="3">🐟 魚群</td><td>アラシ</td><td>50%</td><td>0.50%</td></tr>
+            <tr class="odds-group-fish"><td>シゴロ</td><td>30%</td><td>0.30%</td></tr>
+            <tr class="odds-group-fish"><td>通常の目</td><td>20%</td><td>0.20%</td></tr>
+            <tr class="odds-group-flame"><td rowspan="4">🔥 炎</td><td>ピンゾロ</td><td>3%</td><td>0.08%</td></tr>
+            <tr class="odds-group-flame"><td>アラシ</td><td>20%</td><td>0.50%</td></tr>
+            <tr class="odds-group-flame"><td>通常の目</td><td>67%</td><td>1.68%</td></tr>
+            <tr class="odds-group-flame"><td>目なし</td><td>10%</td><td>0.25%</td></tr>
+            <tr class="odds-group-bubble"><td rowspan="4">🫧 泡</td><td>ピンゾロ</td><td>2%</td><td>0.05%</td></tr>
+            <tr class="odds-group-bubble"><td>目なし</td><td>53%</td><td>1.33%</td></tr>
+            <tr class="odds-group-bubble"><td>通常の目</td><td>25%</td><td>0.63%</td></tr>
+            <tr class="odds-group-bubble"><td>ヒフミ</td><td>20%</td><td>0.50%</td></tr>
+            <tr class="odds-group-rain"><td rowspan="4">🌧 雨</td><td>ピンゾロ</td><td>1%</td><td>0.04%</td></tr>
+            <tr class="odds-group-rain"><td>目なし</td><td>54%</td><td>2.16%</td></tr>
+            <tr class="odds-group-rain"><td>ヒフミ</td><td>35%</td><td>1.40%</td></tr>
+            <tr class="odds-group-rain"><td>通常の目</td><td>10%</td><td>0.40%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="odds-section">
+        <h3 class="odds-heading">演出なし（通常サイコロ）の出目確率</h3>
+        <table class="odds-table">
+          <thead><tr><th>出目</th><th>理論確率</th><th>全体への寄与</th></tr></thead>
+          <tbody>
+            <tr><td>ピンゾロ</td><td>0.46%</td><td>0.41%</td></tr>
+            <tr><td>アラシ（2〜6）</td><td>2.31%</td><td>2.08%</td></tr>
+            <tr><td>シゴロ</td><td>2.78%</td><td>2.50%</td></tr>
+            <tr><td>通常の目</td><td>41.67%</td><td>37.50%</td></tr>
+            <tr><td>目なし</td><td>50.00%</td><td>45.00%</td></tr>
+            <tr><td>ヒフミ</td><td>2.78%</td><td>2.50%</td></tr>
+          </tbody>
+        </table>
+        <p class="odds-desc" style="margin-top:8px;font-size:12px;">全体への寄与 ＝ 理論確率 × 90%（演出なし時の割合）</p>
+      </div>
+    </div>
+
+    <!-- 甘チンタブ -->
+    <div class="odds-panel" id="odds-panel-amachin" hidden>
+      <p class="odds-desc">演出出現率 <strong>40%</strong>。良い役が出やすくなります。</p>
+
+      <div class="odds-section">
+        <h3 class="odds-heading">演出の出現率</h3>
+        <table class="odds-table">
+          <thead><tr><th>演出</th><th>全体確率</th></tr></thead>
+          <tbody>
+            <tr><td>🐟 魚群</td><td>12.0%</td></tr>
+            <tr><td>🔥 炎</td><td>12.0%</td></tr>
+            <tr><td>🫧 泡</td><td>8.0%</td></tr>
+            <tr><td>🌧 雨</td><td>8.0%</td></tr>
+            <tr class="odds-row-none"><td>なし</td><td>60.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="odds-section">
+        <h3 class="odds-heading">演出×出目の補正</h3>
+        <table class="odds-table">
+          <thead><tr><th>演出</th><th>出目</th><th>演出内</th><th>全体</th></tr></thead>
+          <tbody>
+            <tr class="odds-group-fish"><td rowspan="4">🐟 魚群</td><td>ピンゾロ</td><td>10%</td><td>1.20%</td></tr>
+            <tr class="odds-group-fish"><td>アラシ</td><td>60%</td><td>7.20%</td></tr>
+            <tr class="odds-group-fish"><td>シゴロ</td><td>25%</td><td>3.00%</td></tr>
+            <tr class="odds-group-fish"><td>通常の目</td><td>5%</td><td>0.60%</td></tr>
+            <tr class="odds-group-flame"><td rowspan="4">🔥 炎</td><td>ピンゾロ</td><td>5%</td><td>0.60%</td></tr>
+            <tr class="odds-group-flame"><td>アラシ</td><td>30%</td><td>3.60%</td></tr>
+            <tr class="odds-group-flame"><td>通常の目</td><td>60%</td><td>7.20%</td></tr>
+            <tr class="odds-group-flame"><td>目なし</td><td>5%</td><td>0.60%</td></tr>
+            <tr class="odds-group-bubble"><td rowspan="4">🫧 泡</td><td>ピンゾロ</td><td>3%</td><td>0.24%</td></tr>
+            <tr class="odds-group-bubble"><td>通常の目</td><td>57%</td><td>4.56%</td></tr>
+            <tr class="odds-group-bubble"><td>目なし</td><td>30%</td><td>2.40%</td></tr>
+            <tr class="odds-group-bubble"><td>ヒフミ</td><td>10%</td><td>0.80%</td></tr>
+            <tr class="odds-group-rain"><td rowspan="4">🌧 雨</td><td>ピンゾロ</td><td>2%</td><td>0.16%</td></tr>
+            <tr class="odds-group-rain"><td>通常の目</td><td>43%</td><td>3.44%</td></tr>
+            <tr class="odds-group-rain"><td>目なし</td><td>40%</td><td>3.20%</td></tr>
+            <tr class="odds-group-rain"><td>ヒフミ</td><td>15%</td><td>1.20%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="odds-section">
+        <h3 class="odds-heading">演出なし（通常サイコロ）の出目確率</h3>
+        <table class="odds-table">
+          <thead><tr><th>出目</th><th>理論確率</th><th>全体への寄与</th></tr></thead>
+          <tbody>
+            <tr><td>ピンゾロ</td><td>0.46%</td><td>0.28%</td></tr>
+            <tr><td>アラシ（2〜6）</td><td>2.31%</td><td>1.39%</td></tr>
+            <tr><td>シゴロ</td><td>2.78%</td><td>1.67%</td></tr>
+            <tr><td>通常の目</td><td>41.67%</td><td>25.00%</td></tr>
+            <tr><td>目なし</td><td>50.00%</td><td>30.00%</td></tr>
+            <tr><td>ヒフミ</td><td>2.78%</td><td>1.67%</td></tr>
+          </tbody>
+        </table>
+        <p class="odds-desc" style="margin-top:8px;font-size:12px;">全体への寄与 ＝ 理論確率 × 60%（演出なし時の割合）</p>
+      </div>
+    </div>
+
+    <!-- 特殊役（共通） -->
     <div class="odds-section">
       <h3 class="odds-heading">特殊役</h3>
       <table class="odds-table">
