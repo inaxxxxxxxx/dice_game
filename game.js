@@ -174,43 +174,48 @@
   });
 
   // ============ Screen: Name Entry ============
-  let nameEntryIndex = 0;
-  const nameInput = document.getElementById('name-input');
-  const nameHint = document.getElementById('name-hint');
-  const namesStepLabel = document.getElementById('names-step-label');
+  const nameHint       = document.getElementById('name-hint');
+  const namesInputList = document.getElementById('names-input-list');
 
   function beginNameEntry(){
     state.players = [];
-    nameEntryIndex = 0;
-    showNameEntryScreen();
-  }
-
-  function showNameEntryScreen(){
-    namesStepLabel.textContent = `プレイヤー登録 ・ ${nameEntryIndex+1}人目 / ${state.playerCount}人`;
-    nameInput.value = '';
-    nameHint.textContent = '\u00a0';
+    namesInputList.innerHTML = '';
+    for(let i = 0; i < state.playerCount; i++){
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:10px;';
+      const label = document.createElement('span');
+      label.textContent = `${i+1}`;
+      label.style.cssText = 'font-family:var(--font-display);font-size:18px;color:var(--muted);min-width:20px;text-align:right;';
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.className = 'name-input';
+      inp.placeholder = `プレイヤー${i+1}`;
+      inp.maxLength = 10;
+      inp.autocomplete = 'off';
+      inp.style.cssText = 'flex:1;margin-top:0;';
+      inp.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') commitAllNames(); });
+      row.appendChild(label);
+      row.appendChild(inp);
+      namesInputList.appendChild(row);
+    }
+    nameHint.textContent = ' ';
     showScreen('names');
-    setTimeout(()=> nameInput.focus(), 50);
+    setTimeout(()=> namesInputList.querySelector('input').focus(), 50);
   }
 
-  function commitName(){
-    const raw = nameInput.value.trim();
-    if(!raw){
-      nameHint.textContent = '名前を入力してください';
-      return;
+  function commitAllNames(){
+    const inputs = namesInputList.querySelectorAll('input');
+    for(const inp of inputs){
+      if(!inp.value.trim()){
+        nameHint.textContent = '全員の名前を入力してください';
+        inp.focus();
+        return;
+      }
     }
-    state.players.push({ name: raw });
-    nameEntryIndex++;
-    if(nameEntryIndex < state.playerCount){
-      showNameEntryScreen();
-    } else {
-      startGame();
-    }
+    state.players = Array.from(inputs).map(inp => ({ name: inp.value.trim() }));
+    startGame();
   }
-  document.getElementById('name-next').addEventListener('click', commitName);
-  nameInput.addEventListener('keydown', (e)=>{
-    if(e.key === 'Enter') commitName();
-  });
+  document.getElementById('name-next').addEventListener('click', commitAllNames);
 
   // ============ ゲーム開始（ラウンド管理） ============
   function startGame(){

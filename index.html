@@ -58,16 +58,12 @@
     </div>
   </section>
 
-  <!-- ============ Screen: Name Entry (sequential) ============ -->
+  <!-- ============ Screen: Name Entry (all at once) ============ -->
   <section class="screen" id="screen-names" data-screen="names" hidden>
-    <p class="step-label" id="names-step-label">プレイヤー登録 ・ 1人目</p>
     <h2 class="screen-title">名前を入力してください</h2>
-    <p class="screen-desc">この画面はプレイヤーごとに表示されます。順番に手渡ししてください。</p>
-
-    <input type="text" class="name-input" id="name-input" placeholder="例：たろう" maxlength="10" autocomplete="off">
+    <div id="names-input-list" style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:12px;margin-top:16px;margin-bottom:8px;"></div>
     <p class="input-hint" id="name-hint">&nbsp;</p>
-
-    <div class="nav-row">
+    <div class="nav-row" style="margin-top:24px;">
       <button class="btn btn-primary btn-large" id="name-next">登録する</button>
     </div>
   </section>
