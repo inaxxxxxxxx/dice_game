@@ -482,7 +482,7 @@
     cheatArashi = true;
     state.attempts = Math.max(state.attempts, 1);
     rollAttemptEl.textContent = `${state.attempts}投目 / 3投まで`;
-    btnThrow.hidden = true;
+    btnThrow.disabled = true;
     btnRetry.hidden = true;
     btnConfirm.hidden = true;
     doThrow();
