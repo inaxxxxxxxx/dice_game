@@ -245,7 +245,7 @@
     return {
       x:     init ? Math.random() * W() : W() + 60,
       y:     Math.random() * H(),
-      vx:    -(160 + Math.random() * 100),
+      vx:    -(480 + Math.random() * 300),
       phase: Math.random() * Math.PI * 2,
       size:  14 + Math.random() * 18,
       color,
