@@ -23,7 +23,7 @@
   let floorY = -1.4;
 
   const DICE_SIZE = 0.62;
-  const GRAVITY = -9.2;
+  const GRAVITY = -14.0;
 
   function init(canvasEl){
     canvas = canvasEl;
@@ -194,14 +194,14 @@
 
       const body = diceBodies[i];
       body.vel.set(
-        (Math.random()-0.5)*3.2,
-        2.2 + Math.random()*1.2,
-        (Math.random()-0.5)*3.2
+        (Math.random()-0.5)*3.0,
+        3.0 + Math.random()*1.2,
+        (Math.random()-0.5)*3.0
       );
       body.angVel.set(
-        (Math.random()-0.5)*14,
-        (Math.random()-0.5)*14,
-        (Math.random()-0.5)*14
+        (Math.random()-0.5)*22,
+        (Math.random()-0.5)*22,
+        (Math.random()-0.5)*22
       );
       body.rest = false;
       body.restTimer = 0;
@@ -219,6 +219,7 @@
       steps++;
 
       let allRest = true;
+      const floorLevel = floorY + DICE_SIZE*0.5;
 
       diceMeshes.forEach((mesh, i)=>{
         const body = diceBodies[i];
@@ -233,9 +234,6 @@
         mesh.rotation.x += body.angVel.x * dt;
         mesh.rotation.y += body.angVel.y * dt;
         mesh.rotation.z += body.angVel.z * dt;
-
-        const halfSize = DICE_SIZE * 0.5 * Math.SQRT2 * 0.78;
-        const floorLevel = floorY + DICE_SIZE*0.5;
 
         // floor collision
         if(mesh.position.y <= floorLevel){
@@ -271,6 +269,35 @@
         body.vel.x *= 0.985;
         body.vel.z *= 0.985;
         body.angVel.multiplyScalar(0.965);
+      });
+
+      // dice-dice collision
+      const minDist = DICE_SIZE * 1.05;
+      for(let a = 0; a < diceMeshes.length; a++){
+        for(let b = a+1; b < diceMeshes.length; b++){
+          const pa = diceMeshes[a].position, pb = diceMeshes[b].position;
+          const dx = pb.x - pa.x, dy = pb.y - pa.y, dz = pb.z - pa.z;
+          const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+          if(dist < minDist && dist > 0.001){
+            const nx = dx/dist, ny = dy/dist, nz = dz/dist;
+            const overlap = (minDist - dist) * 0.5;
+            pa.x -= nx*overlap; pa.y -= ny*overlap; pa.z -= nz*overlap;
+            pb.x += nx*overlap; pb.y += ny*overlap; pb.z += nz*overlap;
+            const ba = diceBodies[a], bb = diceBodies[b];
+            const dvx = bb.vel.x - ba.vel.x, dvy = bb.vel.y - ba.vel.y, dvz = bb.vel.z - ba.vel.z;
+            const vDotN = dvx*nx + dvy*ny + dvz*nz;
+            if(vDotN < 0){
+              const imp = vDotN * 0.55;
+              ba.vel.x += imp*nx; ba.vel.y += imp*ny; ba.vel.z += imp*nz;
+              bb.vel.x -= imp*nx; bb.vel.y -= imp*ny; bb.vel.z -= imp*nz;
+            }
+          }
+        }
+      }
+
+      diceMeshes.forEach((mesh, i)=>{
+        const body = diceBodies[i];
+        if(body.rest){ return; }
 
         // settle detection
         const speed = body.vel.length();

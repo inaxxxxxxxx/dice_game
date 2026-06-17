@@ -24,7 +24,6 @@
 
   <!-- ============ Screen: Player Count ============ -->
   <section class="screen" id="screen-playercount" data-screen="playercount" hidden>
-    <p class="step-label">セットアップ ・ 1</p>
     <h2 class="screen-title">参加人数は？</h2>
     <p class="screen-desc">2人から6人まで対応しています。</p>
 
@@ -43,7 +42,6 @@
 
   <!-- ============ Screen: Loser Count ============ -->
   <section class="screen" id="screen-losercount" data-screen="losercount" hidden>
-    <p class="step-label">セットアップ ・ 2</p>
     <h2 class="screen-title">何人が負けに残る？</h2>
     <p class="screen-desc" id="lc-desc">出目が弱い方から、この人数だけ負けが確定します。</p>
 
@@ -76,11 +74,9 @@
 
   <!-- ============ Screen: Hand-off (pass device) ============ -->
   <section class="screen" id="screen-handoff" data-screen="handoff" hidden>
-    <p class="step-label" id="handoff-round-label">第1ラウンド</p>
     <div class="handoff-card">
-      <p class="handoff-to">次に振るのは</p>
-      <h2 class="handoff-name" id="handoff-name">たろう</h2>
-      <p class="handoff-sub">端末を渡したら、はじめてください</p>
+      <input type="text" class="name-input handoff-name-input" id="handoff-name-input" maxlength="10" autocomplete="off">
+      <p class="handoff-sub">名前を確認・変更してから渡してください</p>
     </div>
     <button class="btn btn-primary btn-large" id="handoff-ready">準備できた</button>
   </section>
@@ -94,7 +90,6 @@
 
     <div class="dice-stage" id="dice-stage">
       <canvas id="dice-canvas"></canvas>
-      <div class="bowl-rim" aria-hidden="true"></div>
     </div>
 
     <div class="roll-result" id="roll-result" aria-live="polite">
@@ -102,14 +97,13 @@
       <p class="roll-result-name" id="roll-result-name">&nbsp;</p>
     </div>
 
-    <button class="btn btn-primary btn-large" id="btn-throw">骰子を振る</button>
+    <button class="btn btn-primary btn-large" id="btn-throw">サイコロを振る</button>
     <button class="btn btn-secondary btn-large" id="btn-retry" hidden>もう一度振る</button>
     <button class="btn btn-primary btn-large" id="btn-confirm" hidden>この目で確定</button>
   </section>
 
   <!-- ============ Screen: Round Summary ============ -->
   <section class="screen" id="screen-summary" data-screen="summary" hidden>
-    <p class="step-label" id="summary-label">第1ラウンド結果</p>
     <h2 class="screen-title" id="summary-title">出目が決まりました</h2>
 
     <div class="result-list" id="result-list"></div>
@@ -131,8 +125,11 @@
 
 </div>
 
+<canvas id="effect-canvas"></canvas>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="dice3d.js"></script>
+<script src="effects.js"></script>
 <script src="game.js"></script>
 </body>
 </html>

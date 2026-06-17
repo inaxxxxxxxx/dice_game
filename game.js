@@ -49,7 +49,7 @@
       return {
         rank: HAND_RANK.HIFUMI,
         subValue: 0,
-        label: 'ヒフミ（反則目）',
+        label: 'ヒフミ',
         eyes: sorted,
         isNoHand: false,
       };
@@ -63,7 +63,7 @@
       return {
         rank: HAND_RANK.NORMAL,
         subValue: singleVal,
-        label: `目（${singleVal}）`,
+        label: `${singleVal}の目`,
         eyes: sorted,
         isNoHand: false,
       };
@@ -231,23 +231,28 @@
   }
 
   // ============ Screen: Hand-off ============
-  const handoffRoundLabel = document.getElementById('handoff-round-label');
-  const handoffNameEl = document.getElementById('handoff-name');
+  const handoffNameInput = document.getElementById('handoff-name-input');
 
   function goToHandoff(){
     if(state.currentTurn >= state.activeIndices.length){
       finishRound();
       return;
     }
+    // 最初のターンはハンドオフ不要（直前に名前入力済み）
+    if(state.currentTurn === 0 && state.round === 1 && !state.isSuddenDeath){
+      beginRollForCurrentPlayer();
+      return;
+    }
     const playerIdx = state.activeIndices[state.currentTurn];
     const player = state.players[playerIdx];
-    handoffRoundLabel.textContent = state.isSuddenDeath
-      ? `サドンデス ・ ${state.currentTurn+1}人目 / ${state.activeIndices.length}人`
-      : `第${state.round}ラウンド ・ ${state.currentTurn+1}人目 / ${state.activeIndices.length}人`;
-    handoffNameEl.textContent = player.name;
+    handoffNameInput.value = player.name;
     showScreen('handoff');
+    setTimeout(()=> handoffNameInput.focus(), 50);
   }
   document.getElementById('handoff-ready').addEventListener('click', ()=>{
+    const playerIdx = state.activeIndices[state.currentTurn];
+    const newName = handoffNameInput.value.trim();
+    if(newName) state.players[playerIdx].name = newName;
     beginRollForCurrentPlayer();
   });
 
@@ -293,6 +298,7 @@
   }
 
   Dice3D.onSettled = function(eyes){
+    if(window.Effects) Effects.stop();
     state.currentDice = eyes;
     currentHand = judgeHand(eyes);
 
@@ -322,8 +328,8 @@
     btnThrow.disabled = true;
     rollResultEyes.textContent = '\u00a0';
     rollResultName.textContent = '\u00a0';
-    Dice3D.throwDice();
-    setTimeout(()=>{ btnThrow.disabled = false; }, 50);
+    if(window.Effects) Effects.start();
+    setTimeout(()=> Dice3D.throwDice(), 650);
   });
 
   btnRetry.addEventListener('click', ()=>{
@@ -332,7 +338,8 @@
     btnRetry.hidden = true;
     rollResultEyes.textContent = '\u00a0';
     rollResultName.textContent = '\u00a0';
-    Dice3D.throwDice();
+    if(window.Effects) Effects.start();
+    setTimeout(()=> Dice3D.throwDice(), 650);
   });
 
   btnConfirm.addEventListener('click', ()=>{
@@ -346,18 +353,11 @@
   });
 
   // ============ Screen: Round Summary ============
-  const summaryLabel = document.getElementById('summary-label');
   const summaryTitle = document.getElementById('summary-title');
   const resultList = document.getElementById('result-list');
 
   function finishRound(){
-    summaryLabel.textContent = state.isSuddenDeath
-      ? `サドンデス結果`
-      : `第${state.round}ラウンド結果`;
-
-    renderResultList(resultList, state.activeIndices, false);
-
-    showScreen('summary');
+    resolveOutcome();
   }
 
   function renderResultList(container, indices, isFinal){
@@ -400,9 +400,6 @@
     return div.innerHTML;
   }
 
-  document.getElementById('summary-next').addEventListener('click', ()=>{
-    resolveOutcome();
-  });
 
   // ============ 勝敗判定ロジック ============
   function resolveOutcome(){

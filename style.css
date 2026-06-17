@@ -40,6 +40,17 @@ html, body{
 }
 
 /* ============ Screen base ============ */
+[hidden]{ display: none !important; }
+
+#effect-canvas{
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+
 .screen{
   display: flex;
   flex-direction: column;
@@ -279,6 +290,23 @@ html, body{
   color: var(--ink-soft);
   margin: 0;
 }
+.handoff-name-input{
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: center;
+  border: none;
+  border-bottom: 2px solid var(--line);
+  background: transparent;
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 4px 0;
+  outline: none;
+}
+.handoff-name-input:focus{
+  border-bottom-color: var(--ink);
+}
 
 /* ============ Roll screen ============ */
 .screen-roll{ padding-top: 36px; }
@@ -338,19 +366,20 @@ html, body{
 }
 .roll-result-eyes{
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--ink);
-  margin: 0 0 4px;
-  min-height: 38px;
+  color: var(--ink-soft);
+  margin: 0 0 6px;
+  min-height: 28px;
 }
 .roll-result-name{
-  font-size: 13px;
+  font-size: 28px;
   color: var(--red);
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-weight: 600;
   margin: 0;
-  min-height: 18px;
+  min-height: 36px;
 }
 
 #screen-roll .btn-large{ margin-top: 8px; }
@@ -362,7 +391,7 @@ html, body{
   max-width: 340px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
   margin-bottom: 40px;
 }
 
@@ -433,6 +462,11 @@ html, body{
 }
 
 .result-list-final .result-row{ padding: 16px 18px; }
+.result-list-final > div{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
 /* tag chip for sudden-death / status */
 .tag-chip{
