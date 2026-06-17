@@ -411,6 +411,7 @@
 
   let diceInitialized = false;
   let currentHand = null;
+  let cheatArashi = false;
 
   function beginRollForCurrentPlayer(){
     const playerIdx = state.activeIndices[state.currentTurn];
@@ -444,7 +445,11 @@
 
   Dice3D.onSettled = function(eyes){
     if(window.Effects) Effects.stop();
-    if(state.activeEffect){
+    if(cheatArashi){
+      eyes = generateEyes('ARASHI');
+      cheatArashi = false;
+      Dice3D.setDiceToValues(eyes);
+    } else if(state.activeEffect){
       const outcome = pickOutcome(state.activeEffect, MODE_CONFIG[state.mode]);
       eyes = generateEyes(outcome);
       state.activeEffect = null;
@@ -471,6 +476,17 @@
       btnConfirm.hidden = false;
     }
   };
+
+  document.getElementById('cheat-arashi').addEventListener('click', ()=>{
+    if(Dice3D.isAnimating()) return;
+    cheatArashi = true;
+    state.attempts = Math.max(state.attempts, 1);
+    rollAttemptEl.textContent = `${state.attempts}投目 / 3投まで`;
+    btnThrow.hidden = true;
+    btnRetry.hidden = true;
+    btnConfirm.hidden = true;
+    doThrow();
+  });
 
   function doThrow(){
     state.activeEffect = pickEffect(MODE_CONFIG[state.mode]);
