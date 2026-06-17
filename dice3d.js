@@ -364,11 +364,37 @@
     return FACE_VALUES[bestIdx];
   }
 
+  // 各出目を上面に向ける基本回転（Euler XYZ）
+  // FACE_VALUES = [1,6,2,5,3,4] → +x=1,-x=6,+y=2,-y=5,+z=3,-z=4
+  const VALUE_BASE_EULER = {
+    1: [ 0,           0,  Math.PI/2],  // +x → +y: Rz(+90°)
+    6: [ 0,           0, -Math.PI/2],  // -x → +y: Rz(-90°)
+    2: [ 0,           0,  0        ],  // +y → +y: そのまま
+    5: [ Math.PI,     0,  0        ],  // -y → +y: Rx(180°)
+    3: [-Math.PI/2,   0,  0        ],  // +z → +y: Rx(-90°)
+    4: [ Math.PI/2,   0,  0        ],  // -z → +y: Rx(+90°)
+  };
+
+  // 指定した出目配列に合わせてサイコロの向きを更新する
+  function setDiceToValues(values){
+    values.forEach((v, i) => {
+      const mesh = diceMeshes[i];
+      const [rx, , rz] = VALUE_BASE_EULER[v];
+      const qBase = new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, 0, rz));
+      // ワールドY軸周りにランダム回転（上面を維持したまま向きを変える）
+      const randomY = Math.floor(Math.random() * 4) * (Math.PI / 2);
+      const qWorldY = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), randomY);
+      mesh.setRotationFromQuaternion(qWorldY.multiply(qBase));
+    });
+    renderer.render(scene, camera);
+  }
+
   Dice3D.init = init;
   Dice3D.throwDice = throwDice;
   Dice3D.resetBodies = resetBodies;
   Dice3D.renderStatic = renderStatic;
   Dice3D.isAnimating = ()=> animating;
+  Dice3D.setDiceToValues = setDiceToValues;
 
   window.Dice3D = Dice3D;
 })();

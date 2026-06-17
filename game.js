@@ -447,6 +447,7 @@
       const outcome = pickOutcome(state.activeEffect, MODE_CONFIG[state.mode]);
       eyes = generateEyes(outcome);
       state.activeEffect = null;
+      Dice3D.setDiceToValues(eyes);
     }
     state.currentDice = eyes;
     currentHand = judgeHand(eyes);
