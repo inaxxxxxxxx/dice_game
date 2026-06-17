@@ -345,11 +345,13 @@
     if(currentEffect === 'fish')   effectState = initFish();
     lastTime = performance.now();
     loop();
+    if(window.Sound) Sound[currentEffect]();
   }
 
   function stop(){
     if(animId){ cancelAnimationFrame(animId); animId = null; }
     ctx.clearRect(0, 0, W(), H());
+    if(window.Sound) Sound.stop();
     currentEffect = null;
     effectState   = {};
   }
