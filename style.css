@@ -225,8 +225,12 @@ html, body{
   font-family: var(--font-display);
   font-size: 56px;
   font-weight: 600;
+  line-height: 1;
   min-width: 70px;
   color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stepper-unit{
