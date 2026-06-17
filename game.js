@@ -8,26 +8,38 @@
   // ============ 役判定 ============
   // 戻り値: { rank, label, eyesSum, isNoHand }
   // rank が大きいほど強い。
-  // 強さの序列（伝統ルール）：
-  //   アラシ（ゾロ目）＞ シゴロ（4-5-6）＞ 通常の目（2つ同じ＋1つ、数字の大小） ＞ 目なし ＞ ヒフミ（1-2-3、反則目で最弱・即負け）
+  // 強さの序列：
+  //   ピンゾロ（1-1-1）＞ アラシ（ゾロ目）＞ シゴロ（4-5-6）＞ 通常の目（2つ同じ＋1つ、数字の大小） ＞ 目なし ＞ ヒフミ（1-2-3、反則目で最弱・即負け）
   const HAND_RANK = {
-    HIFUMI: 0,       // 1-2-3（反則目／ションベン。最弱で即負け扱い）
-    NO_HAND: 1,      // 目なし（役なし、3つとも異なる目で順番系でもない）
-    NORMAL: 2,       // 通常の目（2つ同じ＋1つ、合計値で勝負）
+    HIFUMI:  0,      // 1-2-3（反則目。最弱・即負け扱い）
+    NO_HAND: 1,      // 目なし（役なし）
+    NORMAL:  2,      // 通常の目（2つ同じ＋1つ、違う目の数字で勝負）
     SHIGORO: 3,      // シゴロ（4-5-6）
-    ARASHI: 4,       // アラシ（同じ目3つ）
+    ARASHI:  4,      // アラシ（同じ目3つ、数字で勝負）
+    PINZORO: 5,      // ピンゾロ（1-1-1）最強
   };
 
   function judgeHand(diceValues){
     const sorted = [...diceValues].sort((a,b)=>a-b);
     const [a,b,c] = sorted;
 
-    // アラシ（同じ目3つ）－ 最強。ゾロ目同士は数字が大きい方が勝ち
+    // ピンゾロ（1-1-1）－ 最強
+    if(a === 1 && b === 1 && c === 1){
+      return {
+        rank: HAND_RANK.PINZORO,
+        subValue: 0,
+        label: 'ピンゾロ',
+        eyes: sorted,
+        isNoHand: false,
+      };
+    }
+
+    // アラシ（同じ目3つ）－ ゾロ目同士は数字が大きい方が勝ち
     if(a === b && b === c){
       return {
         rank: HAND_RANK.ARASHI,
         subValue: a,
-        label: a === 1 ? 'ピンゾロ' : `アラシ（${a}・${b}・${c}）`,
+        label: `アラシ（${a}・${b}・${c}）`,
         eyes: sorted,
         isNoHand: false,
       };
