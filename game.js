@@ -474,7 +474,7 @@
     state.activeEffect = pickEffect(MODE_CONFIG[state.mode]);
     rollResultEyes.textContent = ' ';
     rollResultName.textContent = ' ';
-    if(window.Effects) Effects.start(state.activeEffect);
+    if(window.Effects && state.activeEffect) Effects.start(state.activeEffect);
     setTimeout(()=> Dice3D.throwDice(), 650);
   }
 
