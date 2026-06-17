@@ -121,6 +121,13 @@
   document.getElementById('btn-start').addEventListener('click', ()=>{
     showScreen('playercount');
   });
+  document.getElementById('btn-odds').addEventListener('click', (e)=>{
+    e.preventDefault();
+    showScreen('odds');
+  });
+  document.getElementById('odds-back').addEventListener('click', ()=>{
+    showScreen('title');
+  });
 
   // ============ Screen: Player Count ============
   const pcValueEl = document.getElementById('pc-value');

@@ -468,6 +468,64 @@ html, body{
   gap: 12px;
 }
 
+/* ============ Odds link (title screen) ============ */
+.odds-link{
+  display: block;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.odds-link:hover{ color: var(--ink-soft); }
+
+/* ============ Odds screen ============ */
+.screen-odds{ padding-top: 40px; align-items: flex-start; }
+
+.odds-section{
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 28px;
+}
+
+.odds-heading{
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+.odds-table{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.odds-table th{
+  text-align: left;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.odds-table td{
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--ink);
+  vertical-align: middle;
+}
+.odds-table tr:last-child td{ border-bottom: none; }
+
+.odds-row-none td{ color: var(--muted); }
+
+.odds-group-fish td:first-child{ color: #3a7bd5; font-weight: 500; }
+.odds-group-flame td:first-child{ color: #c4432e; font-weight: 500; }
+.odds-group-bubble td:first-child{ color: #4fa8c5; font-weight: 500; }
+.odds-group-rain td:first-child{ color: #5a7a9e; font-weight: 500; }
+
 /* tag chip for sudden-death / status */
 .tag-chip{
   display: inline-block;

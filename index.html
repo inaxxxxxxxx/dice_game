@@ -20,6 +20,60 @@
     <h1 class="game-title">チンチロリン</h1>
     <p class="lede">碗の中で三つの骰子が転がる。出た目で役が決まり、強い役から順に勝ち抜ける。</p>
     <button class="btn btn-primary btn-large" id="btn-start">ゲームをはじめる</button>
+    <a class="odds-link" id="btn-odds" href="#">確率テーブル</a>
+  </section>
+
+  <!-- ============ Screen: Odds ============ -->
+  <section class="screen screen-odds" id="screen-odds" data-screen="odds" hidden>
+    <h2 class="screen-title">確率テーブル</h2>
+    <p class="screen-desc" style="margin-bottom:24px;">サイコロを振るたびに10%の確率で演出が発動し、出目が補正されます。</p>
+
+    <div class="odds-section">
+      <h3 class="odds-heading">演出の出現率</h3>
+      <table class="odds-table">
+        <thead><tr><th>演出</th><th>全体確率</th></tr></thead>
+        <tbody>
+          <tr><td>🌧 雨</td><td>4.0%</td></tr>
+          <tr><td>🫧 泡</td><td>2.5%</td></tr>
+          <tr><td>🔥 炎</td><td>2.5%</td></tr>
+          <tr><td>🐟 魚群</td><td>1.0%</td></tr>
+          <tr class="odds-row-none"><td>なし</td><td>90.0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="odds-section">
+      <h3 class="odds-heading">演出×出目の補正</h3>
+      <table class="odds-table">
+        <thead><tr><th>演出</th><th>出目</th><th>演出内</th><th>全体</th></tr></thead>
+        <tbody>
+          <tr class="odds-group-fish"><td rowspan="3">🐟 魚群</td><td>アラシ</td><td>50%</td><td>0.50%</td></tr>
+          <tr class="odds-group-fish"><td>シゴロ</td><td>30%</td><td>0.30%</td></tr>
+          <tr class="odds-group-fish"><td>通常の目</td><td>20%</td><td>0.20%</td></tr>
+          <tr class="odds-group-flame"><td rowspan="3">🔥 炎</td><td>通常の目</td><td>70%</td><td>1.75%</td></tr>
+          <tr class="odds-group-flame"><td>アラシ</td><td>20%</td><td>0.50%</td></tr>
+          <tr class="odds-group-flame"><td>目なし</td><td>10%</td><td>0.25%</td></tr>
+          <tr class="odds-group-bubble"><td rowspan="3">🫧 泡</td><td>目なし</td><td>55%</td><td>1.38%</td></tr>
+          <tr class="odds-group-bubble"><td>通常の目</td><td>25%</td><td>0.63%</td></tr>
+          <tr class="odds-group-bubble"><td>ヒフミ</td><td>20%</td><td>0.50%</td></tr>
+          <tr class="odds-group-rain"><td rowspan="3">🌧 雨</td><td>目なし</td><td>55%</td><td>2.20%</td></tr>
+          <tr class="odds-group-rain"><td>ヒフミ</td><td>35%</td><td>1.40%</td></tr>
+          <tr class="odds-group-rain"><td>通常の目</td><td>10%</td><td>0.40%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="odds-section">
+      <h3 class="odds-heading">特殊役</h3>
+      <table class="odds-table">
+        <thead><tr><th>役名</th><th>条件</th><th>強さ</th></tr></thead>
+        <tbody>
+          <tr><td>ピンゾロ</td><td>1・1・1</td><td>アラシの中で最弱</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="btn btn-ghost btn-large" id="odds-back" style="margin-top:8px;">戻る</button>
   </section>
 
   <!-- ============ Screen: Player Count ============ -->
