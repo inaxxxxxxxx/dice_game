@@ -469,6 +469,7 @@
     rollResultName.className = 'roll-result-name';
     btnThrow.hidden = false;
     btnRetry.hidden = true;
+    btnRetry.disabled = false;
     btnConfirm.hidden = true;
     btnThrow.disabled = false;
 
@@ -513,6 +514,7 @@
     if(currentHand.isNoHand && hasAttemptsLeft){
       // 目が出るまで振り直し可能（最大3投）
       btnRetry.hidden = false;
+      btnRetry.disabled = false;
       btnConfirm.hidden = true;
     } else {
       // 役が出た、または3投使い切った（目なし確定）
@@ -553,10 +555,11 @@
   });
 
   btnRetry.addEventListener('click', ()=>{
+    if(Dice3D.isAnimating()) return;
     vibrate();
     state.attempts++;
     renderAttemptDots(state.attempts);
-    btnRetry.hidden = true;
+    btnRetry.disabled = true; // 非表示ではなく非アクティブにして高さを保つ
     doThrow();
   });
 

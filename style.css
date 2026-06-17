@@ -220,6 +220,10 @@ html, body{
   color: var(--ink);
   border-color: var(--ink);
 }
+.btn-secondary:disabled{
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 
 .btn-ghost{
   background: transparent;
