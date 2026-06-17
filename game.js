@@ -349,14 +349,9 @@
 
   function commitAllNames(){
     const inputs = namesInputList.querySelectorAll('input');
-    for(const inp of inputs){
-      if(!inp.value.trim()){
-        nameHint.textContent = '全員の名前を入力してください';
-        inp.focus();
-        return;
-      }
-    }
-    state.players = Array.from(inputs).map(inp => ({ name: inp.value.trim() }));
+    state.players = Array.from(inputs).map((inp, i) => ({
+      name: inp.value.trim() || `プレイヤー${i + 1}`,
+    }));
     startGame();
   }
   document.getElementById('name-next').addEventListener('click', commitAllNames);
