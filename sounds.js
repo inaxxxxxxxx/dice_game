@@ -3,7 +3,7 @@
   Web Audio API による効果音合成。外部ファイル不要。
 */
 
-const Sound = (function(){
+window.Sound = (function(){
   let actx = null;
   let active = [];
   let bubbleTimer = null;

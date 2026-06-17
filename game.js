@@ -192,7 +192,6 @@
     players: [],       // { name }
     round: 1,
     isSuddenDeath: false,
-    suddenDeathPool: [], // index list of players still contending
     activeIndices: [],   // indices participating in current round (for sudden death subset)
     currentTurn: 0,       // pointer within activeIndices
     attempts: 0,
@@ -489,7 +488,8 @@
   });
 
   function doThrow(){
-    state.activeEffect = pickEffect(MODE_CONFIG[state.mode]);
+    // チート中は演出を抑制（出目は onSettled で強制アラシに差し替え）
+    state.activeEffect = cheatArashi ? null : pickEffect(MODE_CONFIG[state.mode]);
     rollResultEyes.textContent = ' ';
     rollResultName.textContent = ' ';
     if(window.Effects && state.activeEffect) Effects.start(state.activeEffect);
@@ -525,46 +525,9 @@
     goToHandoff();
   });
 
-  // ============ Screen: Round Summary ============
-  const summaryTitle = document.getElementById('summary-title');
-  const resultList = document.getElementById('result-list');
-
+  // ============ ラウンド終了 ============
   function finishRound(){
     resolveOutcome();
-  }
-
-  function renderResultList(container, indices, isFinal){
-    container.innerHTML = '';
-    const ranked = indices.map(idx=>{
-      const r = state.results[idx];
-      return { idx, player: state.players[idx], hand: r.hand, eyes: r.eyes };
-    }).sort((a,b)=> compareHands(b.hand, a.hand));
-
-    let bestRank = ranked.length ? ranked[0].hand : null;
-    let worstRank = ranked.length ? ranked[ranked.length-1].hand : null;
-
-    ranked.forEach((entry, i)=>{
-      const row = document.createElement('div');
-      row.className = 'result-row';
-      const isBest = bestRank && compareHands(entry.hand, bestRank) === 0;
-      const isWorst = worstRank && compareHands(entry.hand, worstRank) === 0 && !isBest;
-      if(isBest) row.classList.add('is-best');
-      if(isWorst) row.classList.add('is-worst');
-
-      row.innerHTML = `
-        <div class="result-row-left">
-          <span class="result-rank">${i+1}</span>
-          <div>
-            <div class="result-name">${escapeHtml(entry.player.name)}</div>
-          </div>
-        </div>
-        <div class="result-row-right">
-          <div class="result-eyes">${entry.eyes.join(' ')}</div>
-          <div class="result-hand">${entry.hand.label}</div>
-        </div>
-      `;
-      container.appendChild(row);
-    });
   }
 
   function escapeHtml(str){
@@ -642,7 +605,6 @@
       state.isSuddenDeath = true;
       state.round += 1;
       state.activeIndices = contendingForSuddenDeath;
-      state.suddenDeathSlotsNeeded = slotsLeft;
       showSuddenDeathScreen(contendingForSuddenDeath, slotsLeft);
       return;
     }
