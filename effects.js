@@ -329,9 +329,9 @@
     animId = requestAnimationFrame(loop);
   }
 
-  function start(){
+  function start(effectName){
     stop();
-    currentEffect = EFFECTS[Math.floor(Math.random() * EFFECTS.length)];
+    currentEffect = effectName || EFFECTS[Math.floor(Math.random() * EFFECTS.length)];
     if(currentEffect === 'flame')  effectState = initFlame();
     if(currentEffect === 'rain')   effectState = initRain();
     if(currentEffect === 'bubble') effectState = initBubble();

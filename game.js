@@ -100,6 +100,91 @@
     return 0;
   }
 
+  // ============ モード設定 ============
+  // 演出出現率と出目補正テーブルをモード別に定義
+  const MODE_CONFIG = {
+    default: {
+      effectRate: 0.10,
+      // 演出の重み（合計1）
+      effectWeights: { fish: 0.10, flame: 0.25, bubble: 0.25, rain: 0.40 },
+      // 各演出内での出目補正（累積確率で実装しやすい形）
+      outcomes: {
+        fish:   [['ARASHI',0.50],['SHIGORO',0.80],['NORMAL',1.00]],
+        flame:  [['NORMAL',0.70],['ARASHI',0.90],['NO_HAND',1.00]],
+        bubble: [['NO_HAND',0.55],['NORMAL',0.80],['HIFUMI',1.00]],
+        rain:   [['NO_HAND',0.55],['HIFUMI',0.90],['NORMAL',1.00]],
+      },
+    },
+    amachin: {
+      effectRate: 0.40,
+      effectWeights: { fish: 0.30, flame: 0.30, bubble: 0.20, rain: 0.20 },
+      outcomes: {
+        fish:   [['PINZORO',0.10],['ARASHI',0.70],['SHIGORO',0.95],['NORMAL',1.00]],
+        flame:  [['ARASHI',0.30],['NORMAL',0.95],['NO_HAND',1.00]],
+        bubble: [['NORMAL',0.60],['NO_HAND',0.90],['HIFUMI',1.00]],
+        rain:   [['NORMAL',0.45],['NO_HAND',0.85],['HIFUMI',1.00]],
+      },
+    },
+  };
+
+  // ============ 演出・出目補正 ============
+  function pickEffect(config){
+    if(Math.random() >= config.effectRate) return null;
+    const r = Math.random();
+    let cumul = 0;
+    for(const [name, w] of Object.entries(config.effectWeights)){
+      cumul += w;
+      if(r < cumul) return name;
+    }
+    return Object.keys(config.effectWeights)[0];
+  }
+
+  function pickOutcome(effect, config){
+    const table = config.outcomes[effect];
+    const r = Math.random();
+    for(const [rank, cumul] of table){
+      if(r < cumul) return rank;
+    }
+    return table[table.length - 1][0];
+  }
+
+  function generateEyes(rank){
+    if(rank === 'PINZORO') return [1, 1, 1];
+    if(rank === 'SHIGORO') return [4, 5, 6];
+    if(rank === 'HIFUMI')  return [1, 2, 3];
+    if(rank === 'ARASHI'){
+      const v = 2 + Math.floor(Math.random() * 5);
+      return [v, v, v];
+    }
+    if(rank === 'NORMAL'){
+      let pair, single, sorted;
+      do {
+        pair   = 1 + Math.floor(Math.random() * 6);
+        single = 1 + Math.floor(Math.random() * 6);
+        sorted = [pair, pair, single].sort((a,b)=>a-b);
+      } while(
+        pair === single ||
+        (sorted[0]===1 && sorted[1]===2 && sorted[2]===3)
+      );
+      return [pair, pair, single];
+    }
+    if(rank === 'NO_HAND'){
+      let a, b, c, s;
+      do {
+        a = 1 + Math.floor(Math.random() * 6);
+        b = 1 + Math.floor(Math.random() * 6);
+        c = 1 + Math.floor(Math.random() * 6);
+        s = [a,b,c].sort((x,y)=>x-y);
+      } while(
+        a===b || b===c || a===c ||
+        (s[0]===1 && s[1]===2 && s[2]===3) ||
+        (s[0]===4 && s[1]===5 && s[2]===6)
+      );
+      return [a, b, c];
+    }
+    return [1, 1, 1];
+  }
+
   // ============ ゲーム状態 ============
   const state = {
     playerCount: 3,
@@ -116,6 +201,8 @@
     decidedWinners: [],    // indices already confirmed safe (winners, not yet used but reserved)
     decidedLosers: [],     // indices already confirmed losers
     finalRecord: {},        // idx -> { hand, eyes } 確定済みプレイヤーの結果スナップショット
+    mode: 'default',       // 'default' | 'amachin'
+    activeEffect: null,    // 現在の演出名（null = 演出なし）
   };
 
   // ============ DOM参照 ============
@@ -135,10 +222,48 @@
   });
   document.getElementById('btn-odds').addEventListener('click', (e)=>{
     e.preventDefault();
+    renderOddsScreen();
     showScreen('odds');
   });
   document.getElementById('odds-back').addEventListener('click', ()=>{
     showScreen('title');
+  });
+
+  // ============ Odds Screen: タブ・モード切替 ============
+  const oddsTabs     = document.querySelectorAll('.odds-tab');
+  const oddsPanels   = { default: document.getElementById('odds-panel-default'), amachin: document.getElementById('odds-panel-amachin') };
+  const oddsModeRow  = document.querySelector('.odds-mode-row');
+  const oddsModeLabel  = document.getElementById('odds-mode-label');
+  const oddsModeToggle = document.getElementById('odds-mode-toggle');
+  function setMode(mode){
+    state.mode = mode;
+    document.getElementById('btn-throw').textContent = mode === 'amachin' ? 'サイコロを振る（甘チン）' : 'サイコロを振る';
+  }
+
+  function renderOddsScreen(){
+    // タブをアクティブモードに合わせる
+    switchOddsTab(state.mode);
+  }
+
+  function switchOddsTab(tab){
+    oddsTabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+    oddsPanels.default.hidden  = (tab !== 'default');
+    oddsPanels.amachin.hidden  = (tab !== 'amachin');
+    const isAmachin = state.mode === 'amachin';
+    oddsModeRow.classList.toggle('is-amachin', isAmachin);
+    oddsModeLabel.textContent  = isAmachin ? '現在：甘チンモード' : '現在：デフォルト';
+    oddsModeToggle.textContent = isAmachin ? 'デフォルトに戻す' : '甘チンに切替';
+  }
+
+  document.querySelector('.odds-tabs').addEventListener('click', (e)=>{
+    const tab = e.target.closest('.odds-tab');
+    if(tab) switchOddsTab(tab.dataset.tab);
+  });
+
+  oddsModeToggle.addEventListener('click', ()=>{
+    const next = state.mode === 'default' ? 'amachin' : 'default';
+    setMode(next);
+    switchOddsTab(next);
   });
 
   // ============ Screen: Player Count ============
@@ -323,6 +448,11 @@
 
   Dice3D.onSettled = function(eyes){
     if(window.Effects) Effects.stop();
+    if(state.activeEffect){
+      const outcome = pickOutcome(state.activeEffect, MODE_CONFIG[state.mode]);
+      eyes = generateEyes(outcome);
+      state.activeEffect = null;
+    }
     state.currentDice = eyes;
     currentHand = judgeHand(eyes);
 
@@ -345,25 +475,27 @@
     }
   };
 
+  function doThrow(){
+    state.activeEffect = pickEffect(MODE_CONFIG[state.mode]);
+    rollResultEyes.textContent = ' ';
+    rollResultName.textContent = ' ';
+    if(window.Effects) Effects.start(state.activeEffect);
+    setTimeout(()=> Dice3D.throwDice(), 650);
+  }
+
   btnThrow.addEventListener('click', ()=>{
     if(Dice3D.isAnimating()) return;
     state.attempts++;
     rollAttemptEl.textContent = `${state.attempts}投目 / 3投まで`;
     btnThrow.disabled = true;
-    rollResultEyes.textContent = '\u00a0';
-    rollResultName.textContent = '\u00a0';
-    if(window.Effects) Effects.start();
-    setTimeout(()=> Dice3D.throwDice(), 650);
+    doThrow();
   });
 
   btnRetry.addEventListener('click', ()=>{
     state.attempts++;
     rollAttemptEl.textContent = `${state.attempts}投目 / 3投まで`;
     btnRetry.hidden = true;
-    rollResultEyes.textContent = '\u00a0';
-    rollResultName.textContent = '\u00a0';
-    if(window.Effects) Effects.start();
-    setTimeout(()=> Dice3D.throwDice(), 650);
+    doThrow();
   });
 
   btnConfirm.addEventListener('click', ()=>{
