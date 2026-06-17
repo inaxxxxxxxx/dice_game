@@ -732,7 +732,14 @@
     showScreen('final');
   }
 
-  document.getElementById('btn-restart').addEventListener('click', resetToTitle);
+  // もう一度プレイ：同じ人数・名前でそのまま再戦
+  document.getElementById('btn-restart').addEventListener('click', ()=>{
+    if(window.Effects) Effects.stop();
+    state.activeEffect = null;
+    cheatArashi = false;
+    startGame();
+  });
+  document.getElementById('btn-to-title').addEventListener('click', resetToTitle);
 
   // ============ 初期化 ============
   renderPC();
