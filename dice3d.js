@@ -393,6 +393,7 @@
   Dice3D.throwDice = throwDice;
   Dice3D.resetBodies = resetBodies;
   Dice3D.renderStatic = renderStatic;
+  Dice3D.resize = resize;
   Dice3D.isAnimating = ()=> animating;
   Dice3D.setDiceToValues = setDiceToValues;
 

@@ -435,6 +435,7 @@
         Dice3D.init(document.getElementById('dice-canvas'));
         diceInitialized = true;
       } else {
+        Dice3D.resize();
         Dice3D.resetBodies();
         Dice3D.renderStatic();
       }
