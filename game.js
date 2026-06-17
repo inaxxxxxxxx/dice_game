@@ -109,7 +109,7 @@
       effectWeights: { fish: 0.10, flame: 0.25, bubble: 0.25, rain: 0.40 },
       // 各演出内での出目補正（累積確率で実装しやすい形）
       outcomes: {
-        fish:   [['ARASHI',0.50],['SHIGORO',0.80],['NORMAL',1.00]],
+        fish:   [['PINZORO',0.05],['ARASHI',0.50],['SHIGORO',0.80],['NORMAL',1.00]],
         flame:  [['PINZORO',0.03],['ARASHI',0.23],['NORMAL',0.90],['NO_HAND',1.00]],
         bubble: [['PINZORO',0.02],['NO_HAND',0.55],['NORMAL',0.80],['HIFUMI',1.00]],
         rain:   [['PINZORO',0.01],['NO_HAND',0.55],['HIFUMI',0.90],['NORMAL',1.00]],
