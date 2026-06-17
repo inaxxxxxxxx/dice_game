@@ -250,7 +250,9 @@
 
   <!-- ============ Screen: Hand-off (pass device) ============ -->
   <section class="screen" id="screen-handoff" data-screen="handoff" hidden>
+    <p class="roll-progress" id="handoff-progress">&nbsp;</p>
     <div class="handoff-card">
+      <p class="handoff-to">次のプレイヤー</p>
       <input type="text" class="name-input handoff-name-input" id="handoff-name-input" maxlength="10" autocomplete="off">
       <p class="handoff-sub">名前を確認・変更してから渡してください</p>
     </div>
@@ -261,8 +263,9 @@
   <section class="screen screen-roll" id="screen-roll" data-screen="roll" hidden>
   <button id="cheat-arashi" aria-hidden="true" tabindex="-1" style="position:fixed;bottom:0;right:0;width:60px;height:60px;background:transparent;border:none;cursor:default;z-index:999;"></button>
     <div class="roll-header">
+      <p class="roll-progress" id="roll-progress">&nbsp;</p>
       <p class="roll-player" id="roll-player-name">たろう</p>
-      <p class="roll-attempt" id="roll-attempt">1投目 / 3投まで</p>
+      <div class="attempt-dots" id="attempt-dots" aria-label="投げ回数"></div>
     </div>
 
     <div class="dice-stage" id="dice-stage">
@@ -295,6 +298,7 @@
 </div>
 
 <canvas id="effect-canvas"></canvas>
+<div id="flash"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="dice3d.js"></script>

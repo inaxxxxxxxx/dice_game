@@ -366,31 +366,52 @@ html, body{
 }
 
 /* ============ Roll screen ============ */
-.screen-roll{ padding-top: 36px; }
+.screen-roll{ padding-top: 28px; justify-content: center; }
 
 .roll-header{
-  margin-bottom: 8px;
+  margin-bottom: 4px;
+}
+.roll-progress{
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 6px;
+  min-height: 16px;
 }
 .roll-player{
   font-family: var(--font-display);
   font-size: 22px;
   font-weight: 600;
   color: var(--ink);
-  margin: 0 0 6px;
+  margin: 0 0 8px;
 }
-.roll-attempt{
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  margin: 0;
+
+/* 投げ回数ドット */
+.attempt-dots{
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.attempt-dots span{
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.attempt-dots span.used{
+  background: var(--ink);
+  border-color: var(--ink);
+  transform: scale(1.1);
 }
 
 .dice-stage{
   position: relative;
   width: 100%;
-  max-width: 320px;
-  height: 320px;
-  margin: 16px 0 8px;
+  max-width: 360px;
+  height: 360px;
+  margin: 6px 0 4px;
 }
 
 #dice-canvas{
@@ -398,7 +419,53 @@ html, body{
   inset: 0;
   width: 100%;
   height: 100%;
+  opacity: 0;
+  transition: opacity 0.45s ease;
 }
+#dice-canvas.ready{ opacity: 1; }
+
+/* 強い役・反則目の演出 */
+@keyframes hand-pop{
+  0%{ transform: scale(0.4); opacity: 0; }
+  55%{ transform: scale(1.18); opacity: 1; }
+  100%{ transform: scale(1); }
+}
+@keyframes hand-shake{
+  0%,100%{ transform: translateX(0); }
+  20%{ transform: translateX(-8px); }
+  40%{ transform: translateX(7px); }
+  60%{ transform: translateX(-5px); }
+  80%{ transform: translateX(4px); }
+}
+.roll-result-name.celebrate{
+  animation: hand-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  text-shadow: 0 0 18px rgba(184, 134, 46, 0.55);
+}
+.roll-result-name.foul{
+  animation: hand-shake 0.5s;
+}
+
+/* 画面フラッシュ */
+#flash{
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  opacity: 0;
+}
+#flash.flash-on{ animation: flash-fade 0.6s ease-out; }
+@keyframes flash-fade{
+  0%{ opacity: 1; }
+  100%{ opacity: 0; }
+}
+
+/* サイコロの目（ピップ表示） */
+.pips{
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+}
+.pip-die{ display: block; }
 
 .bowl-rim{
   position: absolute;
@@ -487,6 +554,13 @@ html, body{
   font-size: 13px;
   color: var(--muted);
   min-width: 20px;
+}
+
+.result-medal{
+  font-size: 20px;
+  line-height: 1;
+  min-width: 24px;
+  text-align: center;
 }
 
 .result-name{

@@ -349,5 +349,62 @@
     effectState   = {};
   }
 
-  window.Effects = { start, stop };
+  // ============================================================
+  // CONFETTI  ──  結果画面の勝者向け紙吹雪
+  // ============================================================
+  let confettiId = null;
+  let confettiPieces = [];
+  const CONFETTI_COLORS = ['#C4432E', '#B8862E', '#1C2B3A', '#3a7bd5', '#4fa8c5', '#E8D7D2'];
+
+  function confetti(){
+    stopConfetti();
+    confettiPieces = Array.from({length: 140}, () => ({
+      x:    Math.random() * W(),
+      y:    -20 - Math.random() * H() * 0.5,
+      w:    6 + Math.random() * 7,
+      h:    8 + Math.random() * 8,
+      vx:   (Math.random() - 0.5) * 80,
+      vy:   120 + Math.random() * 180,
+      rot:  Math.random() * Math.PI * 2,
+      vrot: (Math.random() - 0.5) * 8,
+      color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+      life: 0,
+    }));
+    let last = performance.now();
+    const dur = 2.8;
+    function step(){
+      const now = performance.now();
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      ctx.clearRect(0, 0, W(), H());
+      let alive = false;
+      confettiPieces.forEach(p => {
+        p.life += dt;
+        p.vy   += 60 * dt;
+        p.x    += p.vx * dt;
+        p.y    += p.vy * dt;
+        p.rot  += p.vrot * dt;
+        const fade = Math.max(0, 1 - Math.max(0, p.life - (dur - 0.8)) / 0.8);
+        if(p.y < H() + 30 && fade > 0) alive = true;
+        ctx.save();
+        ctx.globalAlpha = fade;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      });
+      if(alive){ confettiId = requestAnimationFrame(step); }
+      else { stopConfetti(); }
+    }
+    confettiId = requestAnimationFrame(step);
+  }
+
+  function stopConfetti(){
+    if(confettiId){ cancelAnimationFrame(confettiId); confettiId = null; }
+    confettiPieces = [];
+    ctx.clearRect(0, 0, W(), H());
+  }
+
+  window.Effects = { start, stop, confetti, stopConfetti };
 })();

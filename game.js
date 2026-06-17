@@ -220,7 +220,7 @@
   }
 
   function resetToTitle(){
-    if(window.Effects) Effects.stop();
+    if(window.Effects){ Effects.stop(); Effects.stopConfetti(); }
     state.round = 1;
     state.isSuddenDeath = false;
     state.players = [];
@@ -397,6 +397,7 @@
 
   // ============ Screen: Hand-off ============
   const handoffNameInput = document.getElementById('handoff-name-input');
+  const handoffProgress = document.getElementById('handoff-progress');
 
   function goToHandoff(){
     if(state.currentTurn >= state.activeIndices.length){
@@ -410,6 +411,7 @@
     }
     const playerIdx = state.activeIndices[state.currentTurn];
     const player = state.players[playerIdx];
+    handoffProgress.textContent = progressText();
     handoffNameInput.value = player.name;
     showScreen('handoff');
     setTimeout(()=> handoffNameInput.focus(), 50);
@@ -423,9 +425,27 @@
 
   // ============ Screen: Dice Roll ============
   const rollPlayerName = document.getElementById('roll-player-name');
-  const rollAttemptEl = document.getElementById('roll-attempt');
+  const rollProgress = document.getElementById('roll-progress');
+  const attemptDots = document.getElementById('attempt-dots');
   const rollResultEyes = document.getElementById('roll-result-eyes');
   const rollResultName = document.getElementById('roll-result-name');
+
+  // 投げ回数ドット（used 個を塗りつぶし、全3投）
+  function renderAttemptDots(used){
+    attemptDots.innerHTML = '';
+    for(let i = 0; i < 3; i++){
+      const dot = document.createElement('span');
+      if(i < used) dot.classList.add('used');
+      attemptDots.appendChild(dot);
+    }
+  }
+
+  // 進行表示テキスト（current ターン / 全体）
+  function progressText(){
+    const pos = state.currentTurn + 1;
+    const total = state.activeIndices.length;
+    return state.isSuddenDeath ? `サドンデス　${total}人中 ${pos}人目` : `${total}人中 ${pos}人目`;
+  }
   const btnThrow = document.getElementById('btn-throw');
   const btnRetry = document.getElementById('btn-retry');
   const btnConfirm = document.getElementById('btn-confirm');
@@ -442,9 +462,11 @@
     currentHand = null;
 
     rollPlayerName.textContent = player.name;
-    rollAttemptEl.textContent = `1投目 / 3投まで`;
+    rollProgress.textContent = progressText();
+    renderAttemptDots(0);
     rollResultEyes.textContent = '\u00a0';
     rollResultName.textContent = '\u00a0';
+    rollResultName.className = 'roll-result-name';
     btnThrow.hidden = false;
     btnRetry.hidden = true;
     btnConfirm.hidden = true;
@@ -481,6 +503,7 @@
 
     rollResultEyes.textContent = eyes.join(' － ');
     rollResultName.textContent = currentHand.label;
+    celebrateHand(currentHand);
 
     btnThrow.hidden = true;
 
@@ -502,7 +525,7 @@
     if(Dice3D.isAnimating()) return;
     cheatArashi = true;
     state.attempts = Math.max(state.attempts, 1);
-    rollAttemptEl.textContent = `${state.attempts}投目 / 3投まで`;
+    renderAttemptDots(state.attempts);
     btnThrow.disabled = true;
     btnRetry.hidden = true;
     btnConfirm.hidden = true;
@@ -524,7 +547,7 @@
     if(Dice3D.isAnimating()) return;
     vibrate();
     state.attempts++;
-    rollAttemptEl.textContent = `${state.attempts}投目 / 3投まで`;
+    renderAttemptDots(state.attempts);
     btnThrow.disabled = true;
     doThrow();
   });
@@ -532,7 +555,7 @@
   btnRetry.addEventListener('click', ()=>{
     vibrate();
     state.attempts++;
-    rollAttemptEl.textContent = `${state.attempts}投目 / 3投まで`;
+    renderAttemptDots(state.attempts);
     btnRetry.hidden = true;
     doThrow();
   });
@@ -556,6 +579,53 @@
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+  }
+
+  // ============ 役の演出（強い役は祝福、反則目はシェイク） ============
+  const flashEl = document.getElementById('flash');
+  function flashScreen(){
+    flashEl.style.background = 'radial-gradient(circle at center, rgba(241,230,206,0.85), rgba(241,230,206,0) 70%)';
+    flashEl.classList.remove('flash-on');
+    void flashEl.offsetWidth; // reflow でアニメ再始動
+    flashEl.classList.add('flash-on');
+  }
+  function celebrateHand(hand){
+    rollResultName.classList.remove('celebrate', 'foul');
+    void rollResultName.offsetWidth;
+    const strong = hand.rank === HAND_RANK.PINZORO
+                || hand.rank === HAND_RANK.ARASHI
+                || hand.rank === HAND_RANK.SHIGORO;
+    if(strong){
+      rollResultName.classList.add('celebrate');
+      flashScreen();
+      if(navigator.vibrate) navigator.vibrate([60, 40, 80]);
+    } else if(hand.rank === HAND_RANK.HIFUMI){
+      rollResultName.classList.add('foul');
+      if(navigator.vibrate) navigator.vibrate([120, 60, 120]);
+    }
+  }
+
+  // ============ サイコロの目をピップ（点）で描画 ============
+  const PIP_LAYOUT = {
+    1: [[0.5,0.5]],
+    2: [[0.28,0.28],[0.72,0.72]],
+    3: [[0.28,0.28],[0.5,0.5],[0.72,0.72]],
+    4: [[0.28,0.28],[0.72,0.28],[0.28,0.72],[0.72,0.72]],
+    5: [[0.28,0.28],[0.72,0.28],[0.5,0.5],[0.28,0.72],[0.72,0.72]],
+    6: [[0.28,0.28],[0.72,0.28],[0.28,0.5],[0.72,0.5],[0.28,0.72],[0.72,0.72]],
+  };
+  function dieSvg(v){
+    const s = 26, r = 2.4;
+    const pipColor = (v === 1) ? '#C4432E' : '#1C2B3A';
+    const pips = (PIP_LAYOUT[v] || []).map(([x,y])=>
+      `<circle cx="${(x*s).toFixed(1)}" cy="${(y*s).toFixed(1)}" r="${r}" fill="${pipColor}"/>`
+    ).join('');
+    return `<svg class="pip-die" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" aria-hidden="true">`
+      + `<rect x="1" y="1" width="${s-2}" height="${s-2}" rx="5" fill="#FAFAF8" stroke="#DEDAD0" stroke-width="1"/>`
+      + pips + `</svg>`;
+  }
+  function renderPips(eyes){
+    return `<span class="pips">${eyes.map(dieSvg).join('')}</span>`;
   }
 
 
@@ -658,7 +728,7 @@
           <div class="result-status" style="margin-left:4px;">${rec ? rec.hand.label : ''}</div>
         </div>
         <div class="result-row-right">
-          <div class="result-eyes">${rec ? rec.eyes.join(' ') : ''}</div>
+          <div class="result-eyes">${rec ? renderPips(rec.eyes) : ''}</div>
         </div>
       `;
       sdList.appendChild(row);
@@ -688,19 +758,23 @@
       compareHands(state.finalRecord[b].hand, state.finalRecord[a].hand)
     );
 
+    const MEDALS = ['🥇', '🥈', '🥉'];
+
     const winnerSection = document.createElement('div');
     winnerSection.innerHTML = `<p class="tag-chip">勝ち抜け（${winners.length}人）</p>`;
-    winners.forEach(idx=>{
+    winners.forEach((idx, i)=>{
       const player = state.players[idx];
       const lastResult = state.finalRecord[idx];
+      const badge = MEDALS[i] || `<span class="result-rank">${i+1}</span>`;
       const row = document.createElement('div');
       row.className = 'result-row is-best';
       row.innerHTML = `
         <div class="result-row-left">
+          <span class="result-medal">${badge}</span>
           <div class="result-name">${escapeHtml(player.name)}</div>
         </div>
         <div class="result-row-right">
-          <div class="result-eyes">${lastResult.eyes.join(' ')}</div>
+          <div class="result-eyes">${renderPips(lastResult.eyes)}</div>
           <div class="result-hand">${lastResult.hand.label}</div>
         </div>
       `;
@@ -721,7 +795,7 @@
           <div class="result-name">${escapeHtml(player.name)}</div>
         </div>
         <div class="result-row-right">
-          <div class="result-eyes">${lastResult.eyes.join(' ')}</div>
+          <div class="result-eyes">${renderPips(lastResult.eyes)}</div>
           <div class="result-hand">${lastResult.hand.label}</div>
         </div>
       `;
@@ -730,11 +804,12 @@
     finalResultList.appendChild(loserSection);
 
     showScreen('final');
+    if(window.Effects) Effects.confetti();
   }
 
   // もう一度プレイ：同じ人数・名前でそのまま再戦
   document.getElementById('btn-restart').addEventListener('click', ()=>{
-    if(window.Effects) Effects.stop();
+    if(window.Effects){ Effects.stop(); Effects.stopConfetti(); }
     state.activeEffect = null;
     cheatArashi = false;
     startGame();

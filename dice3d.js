@@ -66,6 +66,8 @@
     window.addEventListener('resize', resize);
 
     renderStatic();
+    // 初回描画後にフェードイン（一瞬の白を防ぐ）
+    requestAnimationFrame(()=> canvas.classList.add('ready'));
   }
 
   function resize(){
